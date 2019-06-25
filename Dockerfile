@@ -15,15 +15,17 @@ RUN apk --no-cache add \
         nodejs \
         npm \
         libstdc++ \
-        libgcc
+        libgcc \
+        upx
 
 RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
 WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm
-RUN npm install -g pkg
+RUN npm install --unsafe-perm --global pkg
 RUN pkg --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js
+RUN upx --ultra-brute --best zigbee2mqtt
 
 FROM multiarch/alpine:${ARCH}-v3.9
 
