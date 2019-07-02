@@ -24,14 +24,20 @@ WORKDIR /zigbee2mqtt
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
 RUN pkg --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js
 
-FROM multiarch/alpine:${ARCH}-v3.9
+FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/app/data
+
+COPY --from=builder \
+        /lib/ld-musl-x86_64.so.1 \
+        /lib/libc.musl-x86_64.so.1 \
+        /lib/
 
 COPY --from=builder \
         /usr/lib/libstdc++.so.6 \
         /usr/lib/libgcc_s.so.1 \
         /usr/lib/
+
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 COPY --from=builder /zigbee2mqtt/node_modules/cc-znp /zigbee2mqtt/node_modules/cc-znp
 COPY --from=builder /zigbee2mqtt/data/ /app/data
