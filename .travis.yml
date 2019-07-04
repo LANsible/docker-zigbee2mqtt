@@ -19,9 +19,6 @@ matrix:
     # arm64
     - env: VERSION=${TRAVIS_TAG:-1.4.0} ARCH=arm64
 
-    # i386
-    - env: VERSION=${TRAVIS_TAG:-1.4.0} ARCH=i386
-
 before_script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   # Pipe to true since the tag could be non existing
