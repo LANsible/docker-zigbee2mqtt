@@ -3,6 +3,7 @@ ARG ARCH=amd64
 FROM multiarch/alpine:${ARCH}-v3.9 as builder
 
 ARG VERSION=master
+ARG ARCH=amd64
 
 RUN apk --no-cache add \
         git \
@@ -22,15 +23,16 @@ RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2m
 WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
-RUN pkg --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js
+RUN if [ "$ARCH" = "amd64" ]; then target=node10-alpine-x64; elif [ "$ARCH" = "aarch64" ]; then target=node10-alpine-arm64; fi \
+    && pkg --targets ${target} --options expose-gc --output zigbee2mqtt index.js
 
 FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/app/data
 
 COPY --from=builder \
-        /lib/ld-musl-x86_64.so.1 \
-        /lib/libc.musl-x86_64.so.1 \
+        /lib/ld-musl-*.so.1 \
+        /lib/libc.musl-*.so.1 \
         /lib/
 
 COPY --from=builder \

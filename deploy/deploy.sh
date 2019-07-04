@@ -10,13 +10,13 @@ chmod +x manifest-tool
 echo "Deploying manifest for ${VERSION}"
 ./manifest-tool push from-args \
     --ignore-missing \
-    --platforms linux/amd64,linux/arm64,linux/386 \
+    --platforms linux/amd64,linux/arm64 \
     --template ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-ARCH \
     --target ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}
 
 echo "Deploying manifest for latest"
 ./manifest-tool push from-args \
     --ignore-missing \
-    --platforms linux/amd64,linux/arm64,linux/386 \
+    --platforms linux/amd64,linux/arm64 \
     --template ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-ARCH \
     --target ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:latest
