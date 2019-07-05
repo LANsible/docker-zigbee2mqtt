@@ -26,15 +26,9 @@ before_script:
   - docker pull ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:latest || true
 
 script:
-  # Needed for naming difference between manifest-tool and Alpine multiarch image
-  - if [ "${ARCH}" == '386' ]; then
-      ALPINE_ARCH=i386;
-    else
-      ALPINE_ARCH="${ARCH}";
-    fi
-  # Build Mosquitto container
+  # Build Zigbee2MQTT container
   - docker build .
-      --build-arg ARCH=${ALPINE_ARCH}
+      --build-arg ARCH=${ARCH}
       --build-arg VERSION=${VERSION}
       --cache-from ${DOCKER_NAMESPACE}dump/${CONTAINER_NAME}:latest
       --cache-from ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
