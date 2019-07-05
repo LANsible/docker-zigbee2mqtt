@@ -3,7 +3,6 @@ ARG ARCH=amd64
 FROM multiarch/alpine:${ARCH}-v3.9 as builder
 
 ARG VERSION=master
-ARG ARCH=amd64
 
 RUN apk --no-cache add \
         git \
@@ -23,8 +22,12 @@ RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2m
 WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
-RUN if [ "$ARCH" = "amd64" ]; then target=node10-alpine-x64; elif [ "$ARCH" = "aarch64" ]; then target=node10-alpine-arm64; fi \
-    && pkg --targets ${target} --options expose-gc --output zigbee2mqtt index.js
+# ARCH seems a predefined variable on Alpine, no need to pass it as build-arg
+RUN if [ "${ARCH}" = "x86_64" ]; then \
+      pkg --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js; \
+    elif [ "${ARCH}" = "aarch64" ]; then \
+      pkg --targets node10-alpine-arm64 --options expose-gc --output zigbee2mqtt index.js; \
+    fi;
 
 FROM scratch
 
