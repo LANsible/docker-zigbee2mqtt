@@ -22,10 +22,9 @@ RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2m
 WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
-# ARCH seems a predefined variable on Alpine, no need to pass it as build-arg
-RUN if [ "${ARCH}" = "x86_64" ]; then \
+RUN if [ "${ARCH}" = "amd64" ]; then \
       pkg --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js; \
-    elif [ "${ARCH}" = "aarch64" ]; then \
+    elif [ "${ARCH}" = "arm64" ]; then \
       pkg --targets node10-alpine-arm64 --options expose-gc --output zigbee2mqtt index.js; \
     fi;
 
