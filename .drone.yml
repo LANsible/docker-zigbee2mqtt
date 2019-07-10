@@ -14,14 +14,12 @@ steps:
     CONTAINER_NAME: zigbee2mqtt
   commands:
     - export ARCH=$(echo ${DRONE_RUNNER_PLATFORM} | cut -d '/' -f 2)
-    - echo ${ARCH}
+    - echo $ARCH
     - export VERSION=${DRONE_TAG:-$DRONE_BRANCH}
-    - echo ${VERSION}
+    - echo $VERSION
     - docker build .
-        --build-arg VERSION=${VERSION}
-        --cache-from ${DOCKER_NAMESPACE}dump/${CONTAINER_NAME}:latest
-        --cache-from ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
-        --tag ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
+        --build-arg VERSION=$VERSION
+        --tag $DOCKER_NAMESPACE/$CONTAINER_NAME:$VERSION-$ARCH
 
 ---
 kind: pipeline
@@ -39,11 +37,9 @@ steps:
     CONTAINER_NAME: zigbee2mqtt
   commands:
     - export ARCH=$(echo ${DRONE_RUNNER_PLATFORM} | cut -d '/' -f 2)
-    - echo ${ARCH}
+    - echo $ARCH
     - export VERSION=${DRONE_TAG:-$DRONE_BRANCH}
-    - echo ${VERSION}
+    - echo $VERSION
     - docker build .
-        --build-arg VERSION=${VERSION}
-        --cache-from ${DOCKER_NAMESPACE}dump/${CONTAINER_NAME}:latest
-        --cache-from ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
-        --tag ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
+        --build-arg VERSION=$VERSION
+        --tag $DOCKER_NAMESPACE/$CONTAINER_NAME:$VERSION-$ARCH
