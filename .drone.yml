@@ -8,18 +8,16 @@ platform:
 
 steps:
 - name: build
-  image: docker
-  environment:
-    DOCKER_NAMESPACE: lansible
-    CONTAINER_NAME: zigbee2mqtt
-  commands:
-    - export ARCH=$(echo ${DRONE_RUNNER_PLATFORM} | cut -d '/' -f 2)
-    - echo $ARCH
-    - export VERSION=${DRONE_TAG:-$DRONE_BRANCH}
-    - echo $VERSION
-    - docker build .
-        --build-arg VERSION=$VERSION
-        --tag $DOCKER_NAMESPACE/$CONTAINER_NAME:$VERSION-$ARCH
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USERNAME
+    password:
+      from_secret: DOCKER_PASSWORD
+    repo: lansible/zigbee2mqtt
+    build_args:
+      - VERSION=${DRONE_TAG:-$DRONE_BRANCH}
+    tags: ${DRONE_TAG:-$DRONE_BRANCH}-amd64
 
 ---
 kind: pipeline
@@ -31,15 +29,13 @@ platform:
 
 steps:
 - name: build
-  image: docker
-  environment:
-    DOCKER_NAMESPACE: lansible
-    CONTAINER_NAME: zigbee2mqtt
-  commands:
-    - export ARCH=$(echo ${DRONE_RUNNER_PLATFORM} | cut -d '/' -f 2)
-    - echo $ARCH
-    - export VERSION=${DRONE_TAG:-$DRONE_BRANCH}
-    - echo $VERSION
-    - docker build .
-        --build-arg VERSION=$VERSION
-        --tag $DOCKER_NAMESPACE/$CONTAINER_NAME:$VERSION-$ARCH
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USERNAME
+    password:
+      from_secret: DOCKER_PASSWORD
+    repo: lansible/zigbee2mqtt
+    build_args:
+      - VERSION=${DRONE_TAG:-$DRONE_BRANCH}
+    tags: ${DRONE_TAG:-$DRONE_BRANCH}-arm64
