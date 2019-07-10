@@ -1,5 +1,6 @@
 # Zigbee2MQTT
-[![Build Status](https://travis-ci.org/LANsible/docker-zigbee2mqtt.svg?branch=master)](https://travis-ci.org/LANsible/docker-zigbee2mqtt) [![Docker Pulls](https://img.shields.io/docker/pulls/lansible/zigbee2mqtt.svg)](https://hub.docker.com/r/lansible/zigbee2mqtt)
+[![Build Status](https://cloud.drone.io/api/badges/LANsible/docker-zigbee2mqtt/status.svg)](https://cloud.drone.io/LANsible/docker-zigbee2mqtt)
+[![Docker Pulls](https://img.shields.io/docker/pulls/lansible/zigbee2mqtt.svg)](https://hub.docker.com/r/lansible/zigbee2mqtt)
 
 ## Why not use the official container?
 
