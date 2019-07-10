@@ -16,8 +16,8 @@ steps:
       from_secret: DOCKER_PASSWORD
     repo: lansible/zigbee2mqtt
     build_args:
-      - VERSION=${DRONE_TAG:-$DRONE_BRANCH}
-    tags: ${DRONE_TAG:-$DRONE_BRANCH}-amd64
+      - VERSION=${DRONE_TAG:-master}
+    tags: ${DRONE_TAG:-master}-amd64
 
 ---
 kind: pipeline
@@ -37,5 +37,5 @@ steps:
       from_secret: DOCKER_PASSWORD
     repo: lansible/zigbee2mqtt
     build_args:
-      - VERSION=${DRONE_TAG:-$DRONE_BRANCH}
-    tags: ${DRONE_TAG:-$DRONE_BRANCH}-arm64
+      - VERSION=${DRONE_TAG:-master}
+    tags: ${DRONE_TAG:-master}-amd64
