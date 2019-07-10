@@ -1,0 +1,43 @@
+---
+kind: pipeline
+name: amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  image: docker
+  environment:
+    DOCKER_NAMESPACE: lansible
+    CONTAINER_NAME: zigbee2mqtt
+  commands:
+    - export ARCH=$(echo ${DRONE_RUNNER_PLATFORM} | cut -d '/' -f 2)
+    - docker build .
+        --build-arg VERSION=${DRONE_TAG:-1.4.0}
+        --cache-from ${DOCKER_NAMESPACE}dump/${CONTAINER_NAME}:latest
+        --cache-from ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
+        --tag ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
+
+---
+kind: pipeline
+name: arm64
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: build
+  image: docker
+  environment:
+    DOCKER_NAMESPACE: lansible
+    CONTAINER_NAME: zigbee2mqtt
+  commands:
+    - export ARCH=$(echo ${DRONE_RUNNER_PLATFORM} | cut -d '/' -f 2)
+    - docker build .
+        --build-arg VERSION=${DRONE_TAG:-1.4.0}
+        --cache-from ${DOCKER_NAMESPACE}dump/${CONTAINER_NAME}:latest
+        --cache-from ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
+        --tag ${DOCKER_NAMESPACE}/${CONTAINER_NAME}:${VERSION}-${ARCH}
