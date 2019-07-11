@@ -16,7 +16,6 @@ steps:
       from_secret: DOCKER_PASSWORD
     repo: lansible/zigbee2mqtt
     build_args:
-      - ARCH=amd64
       - VERSION=${DRONE_TAG:-master}
     tags: ${DRONE_TAG:-master}-amd64
 
@@ -38,6 +37,54 @@ steps:
       from_secret: DOCKER_PASSWORD
     repo: lansible/zigbee2mqtt
     build_args:
-      - ARCH=amd64
       - VERSION=${DRONE_TAG:-master}
     tags: ${DRONE_TAG:-master}-amd64
+
+---
+kind: pipeline
+name: manifest
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: manifest-versioned
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: DOCKER_USERNAME
+    password:
+      from_secret: DOCKER_PASSWORD
+    target: lansible/zigbee2mqtt:${DRONE_TAG:-master}
+    template: lansible/zigbee2mqtt:${DRONE_TAG:-master}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  when:
+    branch:
+    - master
+
+- name: manifest-latest
+  image: plugins/manifest
+  settings:
+    username:
+      from_secret: DOCKER_USERNAME
+    password:
+      from_secret: DOCKER_PASSWORD
+    target: lansible/zigbee2mqtt:latest
+    template: lansible/zigbee2mqtt:${DRONE_TAG:-master}-ARCH
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  when:
+    event:
+    - tag
+
+depends_on:
+- amd64
+- arm64
+
+trigger:
+  branch:
+  - master
