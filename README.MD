@@ -1,6 +1,8 @@
 # Zigbee2MQTT
 [![Build Status](https://cloud.drone.io/api/badges/LANsible/docker-zigbee2mqtt/status.svg)](https://cloud.drone.io/LANsible/docker-zigbee2mqtt)
 [![Docker Pulls](https://img.shields.io/docker/pulls/lansible/zigbee2mqtt.svg)](https://hub.docker.com/r/lansible/zigbee2mqtt)
+[![Docker Version](https://images.microbadger.com/badges/version/lansible/zigbee2mqtt:latest.svg)](https://microbadger.com/images/lansible/zigbee2mqtt:latest)
+[![Docker Size/Layers](https://images.microbadger.com/badges/image/lansible/zigbee2mqtt:latest.svg)](https://microbadger.com/images/lansible/zigbee2mqtt:latest)
 
 ## Why not use the official container?
 
@@ -28,7 +30,6 @@ You could build the container locally to add plugins. It works like this:
 
 ```bash
 docker build . \
-      --build-arg ARCH=amd64 \
       --build-arg VERSION=1.4.0 \
       --tag lansible/zigbee2mqtt:1.4.0
 ```
@@ -36,5 +37,8 @@ The arguments are:
 
 | Build argument | Description                                    | Example                 |
 |----------------|------------------------------------------------|-------------------------|
-| `ARCH`         | Architecture to build (amd64, arm64, i386)     | `amd64`                 |
 | `VERSION`      | Version of Home Assistant                      | `1.4.0`                 |
+
+## Credits
+
+* [Koenkk/zigbee2mqtt](https://github.com/Koenkk/zigbee2mqtt)
