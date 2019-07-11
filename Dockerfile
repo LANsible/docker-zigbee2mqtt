@@ -25,9 +25,9 @@ WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
 RUN if [ "${ARCH}" = "amd64" ]; then \
-      pkg --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js; \
+      pkg --debug --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js; \
     elif [ "${ARCH}" = "arm64" ]; then \
-      pkg --targets node10-alpine-arm64 --options expose-gc --output zigbee2mqtt index.js; \
+      pkg --debug --targets node10-alpine-arm64 --options expose-gc --output zigbee2mqtt index.js; \
     fi;
 
 FROM scratch
