@@ -38,7 +38,7 @@ steps:
     repo: lansible/zigbee2mqtt
     build_args:
     - VERSION=${DRONE_TAG:-master}
-    tags: ${DRONE_TAG:-master}-amd64
+    tags: ${DRONE_TAG:-master}-arm64
 
 ---
 kind: pipeline
