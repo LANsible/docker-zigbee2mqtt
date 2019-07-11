@@ -1,10 +1,6 @@
-# Inspired from https://github.com/seblucas/alpine-homeassistant
-# ARG ARCH=amd64
-# FROM multiarch/alpine:${ARCH}-v3.9 as builder
 FROM alpine:3.10 as builder
 
 ARG VERSION=master
-ARG ARCH=amd64
 
 RUN apk --no-cache add \
         git \
@@ -24,9 +20,9 @@ RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2m
 WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
-RUN if [ "${ARCH}" = "amd64" ]; then \
+RUN if [[ $(arch) == "x86_64" ]]; then \
       pkg --debug --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js; \
-    elif [ "${ARCH}" = "arm64" ]; then \
+    elif [[ $(arch) == "aarch64" ]]; then \
       pkg --debug --targets node10-alpine-arm64 --options expose-gc --output zigbee2mqtt index.js; \
     fi;
 
