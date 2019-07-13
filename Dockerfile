@@ -22,9 +22,9 @@ WORKDIR /zigbee2mqtt
 
 RUN npm install --unsafe-perm && npm install --unsafe-perm --global nexe @zeit/ncc
 RUN if [[ $(arch) == "x86_64" ]]; then \
-      ncc build index.js && cat dist/index.js | nexe -o zigbee2mqtt \
+      ncc build index.js && cat dist/index.js | nexe -o zigbee2mqtt; \
     elif [[ $(arch) == "aarch64" ]]; then \
-      ncc build index.js && cat dist/index.js | nexe --build -o zigbee2mqtt \
+      ncc build index.js && cat dist/index.js | nexe --build -o zigbee2mqtt; \
     fi;
 
 # FROM scratch
