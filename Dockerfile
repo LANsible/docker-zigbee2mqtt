@@ -13,7 +13,8 @@ RUN apk --no-cache add \
         g++ \
         linux-headers \
         udev \
-        npm
+        npm \
+        upx
 
 RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
@@ -27,7 +28,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     npm install --unsafe-perm --global nexe && \
     nexe -o zigbee2mqtt \
       --build \
-      --resource node_modules/cc-znp/node_modules/serialport
+      --resource node_modules/cc-znp/node_modules/serialport \
+      --resource node_modules/zigbee-herdsman/node_modules/@serialport && \
+    upx --best zigbee2mqtt
 
 FROM scratch
 
