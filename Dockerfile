@@ -22,6 +22,7 @@ WORKDIR /zigbee2mqtt
 
 # Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
 # NOTE(wilmardo): --build is needed for dynamic require that serialport/bindings seems to use
+# NOTE(wilmardo): upx --brute does not work see: https://github.com/nexe/nexe/issues/610#issuecomment-483280452
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
     npm install --unsafe-perm && \
@@ -30,7 +31,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --build \
       --resource node_modules/cc-znp/node_modules/serialport \
       --resource node_modules/zigbee-herdsman/node_modules/@serialport && \
-    upx zigbee2mqtt
+    upx --overlay=copy --lzma zigbee2mqtt
 
 FROM scratch
 
