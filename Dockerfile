@@ -30,7 +30,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --build \
       --resource node_modules/cc-znp/node_modules/serialport \
       --resource node_modules/zigbee-herdsman/node_modules/@serialport && \
-    upx --best zigbee2mqtt
+    upx zigbee2mqtt
 
 FROM scratch
 
