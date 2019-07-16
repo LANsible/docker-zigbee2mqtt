@@ -13,7 +13,8 @@ RUN apk --no-cache add \
         g++ \
         linux-headers \
         udev \
-        npm
+        npm \
+        upx
 
 RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
@@ -21,11 +22,16 @@ WORKDIR /zigbee2mqtt
 
 # Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
 # NOTE(wilmardo): --build is needed for dynamic require that serialport/bindings seems to use
-# NOTE(wilmardo): upx --brute does not work see: https://github.com/nexe/nexe/issues/610#issuecomment-483280452
+# NOTE(wilmardo): For the upx steps and why --empty see: https://github.com/nexe/nexe/issues/366
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
     npm install --unsafe-perm && \
     npm install --unsafe-perm --global nexe && \
+    nexe \
+      --build \
+      --empty \
+      --output zigbee2mqtt && \
+    upx ./.nexe/*/out/Release/node && \
     nexe \
       --build \
       --output zigbee2mqtt
