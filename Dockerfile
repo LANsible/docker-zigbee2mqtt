@@ -31,7 +31,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --build \
       --empty \
       --output zigbee2mqtt && \
-    upx --ultra-brute /root/.nexe/*/out/Release/node && \
+    upx --best /root/.nexe/*/out/Release/node && \
     nexe \
       --build \
       --output zigbee2mqtt
