@@ -26,10 +26,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
     npm install --unsafe-perm && \
     npm install --unsafe-perm --global nexe && \
-    nexe -o zigbee2mqtt \
-      --build \
-      --resource node_modules/cc-znp/node_modules/serialport \
-      --resource node_modules/zigbee-herdsman/node_modules/@serialport
+    nexe -o zigbee2mqtt --build
 
 FROM scratch
 
@@ -46,6 +43,9 @@ COPY --from=builder \
         /usr/lib/
 
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
+COPY --from=builder \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/lib/linux.js \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/lib/linux.js
 COPY --from=builder /zigbee2mqtt/data/ /app/data
 
 WORKDIR /zigbee2mqtt
