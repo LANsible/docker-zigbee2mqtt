@@ -7,27 +7,34 @@ LABEL maintainer="wilmardo" \
 
 RUN apk --no-cache add \
         git \
+        python \
         make \
         gcc \
         g++ \
-        python \
         linux-headers \
         udev \
-        nodejs \
         npm \
-        libstdc++ \
-        libgcc
+        upx
 
 RUN git clone --depth 1 --branch "${VERSION}" https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
 WORKDIR /zigbee2mqtt
 
-RUN npm install --unsafe-perm && npm install --unsafe-perm --global pkg
-RUN if [[ $(arch) == "x86_64" ]]; then \
-      pkg --debug --targets node10-alpine-x64 --options expose-gc --output zigbee2mqtt index.js; \
-    elif [[ $(arch) == "aarch64" ]]; then \
-      pkg --debug --targets node10-alpine-arm64 --options expose-gc --output zigbee2mqtt index.js; \
-    fi;
+# Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
+# NOTE(wilmardo): --build is needed for dynamic require that serialport/bindings seems to use
+# NOTE(wilmardo): For the upx steps and why --empty see: https://github.com/nexe/nexe/issues/366
+RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
+    export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
+    npm install --unsafe-perm && \
+    npm install --unsafe-perm --global nexe && \
+    nexe \
+      --build \
+      --empty \
+      --output zigbee2mqtt && \
+    upx --best /root/.nexe/*/out/Release/node && \
+    nexe \
+      --build \
+      --output zigbee2mqtt
 
 FROM scratch
 
@@ -44,7 +51,9 @@ COPY --from=builder \
         /usr/lib/
 
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
-COPY --from=builder /zigbee2mqtt/node_modules/cc-znp /zigbee2mqtt/node_modules/cc-znp
+COPY --from=builder \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/ \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
 COPY --from=builder /zigbee2mqtt/data/ /app/data
 
 WORKDIR /zigbee2mqtt
