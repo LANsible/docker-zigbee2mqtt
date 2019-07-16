@@ -30,31 +30,31 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     nexe \
       --build \
       --empty \
-      --output zigbee2mqtt && \
-    upx ./.nexe/*/out/Release/node && \
-    nexe \
-      --build \
       --output zigbee2mqtt
+    # upx ./.nexe/*/out/Release/node && \
+    # nexe \
+    #   --build \
+    #   --output zigbee2mqtt
 
-FROM scratch
+# FROM scratch
 
-ENV ZIGBEE2MQTT_DATA=/app/data
+# ENV ZIGBEE2MQTT_DATA=/app/data
 
-COPY --from=builder \
-        /lib/ld-musl-*.so.1 \
-        /lib/libc.musl-*.so.1 \
-        /lib/
+# COPY --from=builder \
+#         /lib/ld-musl-*.so.1 \
+#         /lib/libc.musl-*.so.1 \
+#         /lib/
 
-COPY --from=builder \
-        /usr/lib/libstdc++.so.6 \
-        /usr/lib/libgcc_s.so.1 \
-        /usr/lib/
+# COPY --from=builder \
+#         /usr/lib/libstdc++.so.6 \
+#         /usr/lib/libgcc_s.so.1 \
+#         /usr/lib/
 
-COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
-COPY --from=builder \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/ \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
-COPY --from=builder /zigbee2mqtt/data/ /app/data
+# COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
+# COPY --from=builder \
+#   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/ \
+#   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
+# COPY --from=builder /zigbee2mqtt/data/ /app/data
 
-WORKDIR /zigbee2mqtt
-CMD ["./zigbee2mqtt"]
+# WORKDIR /zigbee2mqtt
+# CMD ["./zigbee2mqtt"]
