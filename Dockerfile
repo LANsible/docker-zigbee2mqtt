@@ -46,6 +46,7 @@ COPY --from=builder \
         /usr/lib/
 
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
+COPY --from=builder /zigbee2mqtt/node_modules/zigbee-herdsman/ /zigbee2mqtt/node_modules/zigbee-herdsman/
 COPY --from=builder /zigbee2mqtt/data/ /app/data
 
 WORKDIR /zigbee2mqtt
