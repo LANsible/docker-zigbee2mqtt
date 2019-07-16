@@ -28,8 +28,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     npm install --unsafe-perm --global nexe && \
     nexe \
       --build \
-      --output zigbee2mqtt \
-      --resource /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings
+      --output zigbee2mqtt
 
 FROM scratch
 
