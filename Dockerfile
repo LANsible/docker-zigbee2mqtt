@@ -36,9 +36,8 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --build \
       --output zigbee2mqtt
 
-# Create symlink from .storage to /dev/shm to be able to run as readonly
-RUN mkdir -p /app/data && \
-    ln -sf /dev/shm /app/data/.storage
+# Create directory already since running as readonly
+RUN mkdir -p /app/data/.storage
 
 FROM scratch
 
