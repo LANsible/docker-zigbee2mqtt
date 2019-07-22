@@ -34,7 +34,8 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
     upx --best /root/.nexe/*/out/Release/node && \
     nexe \
       --build \
-      --output zigbee2mqtt
+      --output zigbee2mqtt && \
+    ln -sf /dev/shm /app/data/.storage
 
 FROM scratch
 
