@@ -5,6 +5,10 @@ ARG VERSION=master
 LABEL maintainer="wilmardo" \
       description="Zigbee2MQTT from scratch"
 
+RUN addgroup -S -g 8123 zigbee2mqtt 2>/dev/null && \
+    adduser -S -u 8123 -D -H -h /dev/shm -s /sbin/nologin -G zigbee2mqtt -g zigbee2mqtt zigbee2mqtt 2>/dev/null && \
+    addgroup zigbee2mqtt dialout
+
 RUN apk --no-cache add \
         git \
         python \
@@ -43,6 +47,12 @@ FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/app/data
 
+# Copy users from builder
+COPY --from=builder \
+    /etc/passwd \
+    /etc/group \
+    /etc/
+
 COPY --from=builder \
         /lib/ld-musl-*.so.1 \
         /lib/libc.musl-*.so.1 \
@@ -59,5 +69,6 @@ COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
 COPY --from=builder /zigbee2mqtt/data/ /app/data
 
+USER zigbee2mqtt
 WORKDIR /zigbee2mqtt
 CMD ["./zigbee2mqtt"]
