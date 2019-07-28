@@ -40,9 +40,15 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --build \
       --output zigbee2mqtt
 
+# Create symlink
+RUN ln -sf /config/$filename /dev/shm/$filename
+
 FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/dev/shm
+
+# Copy /bin/sh to be able to use an entrypoint
+COPY --from=builder /bin/sh /bin/sh
 
 # Copy users from builder
 COPY --from=builder \
@@ -50,21 +56,26 @@ COPY --from=builder \
     /etc/group \
     /etc/
 
+# Copy needed libs
 COPY --from=builder \
         /lib/ld-musl-*.so.1 \
         /lib/libc.musl-*.so.1 \
         /lib/
-
 COPY --from=builder \
         /usr/lib/libstdc++.so.6 \
         /usr/lib/libgcc_s.so.1 \
         /usr/lib/
 
+# Copy zigbee2mqtt binary and stupid dynamic @serialport
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/ \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
 
+# Adds entrypoint
+COPY ./entrypoint.sh /entrypoint.sh
+
 USER zigbee2mqtt
+ENTRYPOINT [ "/entrypoint.sh" ]
 WORKDIR /zigbee2mqtt
 CMD ["./zigbee2mqtt"]
