@@ -40,12 +40,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
       --build \
       --output zigbee2mqtt
 
-# Create directory already since running as readonly
-RUN mkdir -p /app/data/.storage
-
 FROM scratch
 
-ENV ZIGBEE2MQTT_DATA=/app/data
+ENV ZIGBEE2MQTT_DATA=/dev/shm
 
 # Copy users from builder
 COPY --from=builder \
@@ -67,7 +64,6 @@ COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/ \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
-COPY --from=builder /zigbee2mqtt/data/ /app/data
 
 USER zigbee2mqtt
 WORKDIR /zigbee2mqtt
