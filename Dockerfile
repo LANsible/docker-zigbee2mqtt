@@ -76,6 +76,6 @@ COPY --from=builder \
 COPY ./entrypoint.sh /entrypoint.sh
 
 USER zigbee2mqtt
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh" ]
 WORKDIR /zigbee2mqtt
 CMD ["./zigbee2mqtt"]
