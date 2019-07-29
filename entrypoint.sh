@@ -14,9 +14,8 @@ fi
 # Create symlink for .storage directory
 # Create symlink for state.json:
 # https://github.com/Koenkk/zigbee2mqtt/commit/9396bde1f3b022e0f634487d1a37d2a5127c8cb3#diff-f68567477d803b49930337bf7fe1556bR16
-# 
 if [ -d "/data" ]; then
-    ln -sf /data /dev/shm/.storage
+    ln -sf /data/.storage /dev/shm/.storage
     ln -sf /data/state.json /dev/shm/state.json
     ln -sf /data/state.json /dev/shm/database.db
 fi
