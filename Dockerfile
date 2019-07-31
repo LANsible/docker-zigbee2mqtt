@@ -5,8 +5,8 @@ ARG VERSION=master
 LABEL maintainer="wilmardo" \
   description="Zigbee2MQTT from scratch"
 
-RUN addgroup -S -g 8123 zigbee2mqtt 2>/dev/null && \
-  adduser -S -u 8123 -D -H -h /dev/shm -s /sbin/nologin -G zigbee2mqtt -g zigbee2mqtt zigbee2mqtt 2>/dev/null && \
+RUN addgroup -S -g 1000 zigbee2mqtt 2>/dev/null && \
+  adduser -S -u 1000 -D -H -h /dev/shm -s /sbin/nologin -G zigbee2mqtt -g zigbee2mqtt zigbee2mqtt 2>/dev/null && \
   addgroup zigbee2mqtt dialout
 
 RUN apk --no-cache add \
