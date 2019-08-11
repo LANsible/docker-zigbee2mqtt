@@ -19,5 +19,9 @@ serial:
   # Location of CC2531 USB sniffer
   port: /dev/ttyACM0
 
+# Map devices to persistant azure_rm_storageaccount
+devices: devices.yaml
+groups: groups.yaml
+
 advanced:
   log_directory: false
