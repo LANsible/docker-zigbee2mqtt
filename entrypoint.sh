@@ -28,7 +28,7 @@ if [ -d "/data" ]; then
 
   # Create symlinks needed for persistance
   # devices.yml and group.yml are appended to when joining
-  for symlink in .storage state.json database.db devices.yml groups.yml; do
+  for symlink in .storage state.json database.db devices.yaml groups.yaml; do
     if [ ! -L "/dev/shm/$symlink" ]; then
       echo "Creating symlink from /data/$symlink to /dev/shm/$symlink"
       ln -sf "/data/$symlink" "/dev/shm/$symlink"
