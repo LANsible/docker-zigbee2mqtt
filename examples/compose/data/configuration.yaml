@@ -20,4 +20,4 @@ serial:
   port: /dev/ttyACM0
 
 advanced:
-  log_directory: /dev/stdout
+  log_directory: false
