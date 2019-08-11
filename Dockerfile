@@ -48,10 +48,11 @@ FROM scratch
 ENV ZIGBEE2MQTT_DATA=/dev/shm
 
 # Copy /bin/sh to be able to use an entrypoint
-# Entrypoint uses basename and ln
+# Entrypoint uses basename, mkdir and ln
 COPY --from=builder \
   /bin/sh \
   /bin/ln \
+  /bin/mkdir \
   /usr/bin/basename \
   /bin/
 
