@@ -20,7 +20,7 @@ RUN apk --no-cache add \
   npm \
   upx
 
-RUN git clone --depth 1 --single-branch --branch stdout-only-logging https://github.com/wilmardo/zigbee2mqtt.git /zigbee2mqtt
+RUN git clone --depth 1 --single-branch --branch dev-stateless https://github.com/wilmardo/zigbee2mqtt.git /zigbee2mqtt
 
 WORKDIR /zigbee2mqtt
 
