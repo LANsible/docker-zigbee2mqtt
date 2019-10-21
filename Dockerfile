@@ -16,7 +16,7 @@ RUN apk --no-cache add \
   gcc \
   g++ \
   linux-headers \
-  udev \
+  eudev \
   npm \
   upx
 
