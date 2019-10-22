@@ -9,6 +9,8 @@ RUN addgroup -S -g 1000 zigbee2mqtt 2>/dev/null && \
   adduser -S -u 1000 -D -H -h /dev/shm -s /sbin/nologin -G zigbee2mqtt -g zigbee2mqtt zigbee2mqtt 2>/dev/null && \
   addgroup zigbee2mqtt dialout
 
+# See the upstream Dockerfile for reference:
+# https://github.com/Koenkk/zigbee2mqtt/blob/dev/docker/Dockerfile
 RUN apk --no-cache add \
   git \
   python \
@@ -16,6 +18,7 @@ RUN apk --no-cache add \
   gcc \
   g++ \
   linux-headers \
+  udev \
   eudev \
   npm \
   upx
