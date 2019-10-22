@@ -3,13 +3,10 @@
   services:
     zigbee2mqtt:
       container_name: zigbee2mqtt
-      image: lansible/zigbee2mqtt
+      image: lansible/zigbee2mqtt:latest
       volumes:
-        - ./data:/app/data
+        - ./data:/config
       devices:
-        # CC251
-        #- /dev/ttyUSB_cc2531:/dev/ttyACM0
-        # CC2530 / GBAN GB2530S
-        #- /dev/ttyUSB_cc2530:/dev/ttyACM0
+        - /dev/ttyACM0:/dev/ttyACM0
       restart: always
       network_mode: host
