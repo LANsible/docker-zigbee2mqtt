@@ -43,9 +43,6 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   --build \
   --output zigbee2mqtt
 
-# Create symlink
-RUN ln -sf /config/$filename /dev/shm/$filename
-
 FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/dev/shm
@@ -73,6 +70,7 @@ COPY --from=builder \
 COPY --from=builder \
   /usr/lib/libstdc++.so.6 \
   /usr/lib/libgcc_s.so.1 \
+  /usr/lib/libudev.so.1 \
   /usr/lib/
 
 # Copy zigbee2mqtt binary and stupid dynamic @serialport
