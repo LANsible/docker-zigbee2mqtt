@@ -5,8 +5,7 @@
       container_name: zigbee2mqtt
       image: lansible/zigbee2mqtt:latest
       volumes:
-        - ./data:/config
+        - ./config:/config
       devices:
         - /dev/ttyACM0:/dev/ttyACM0
       restart: always
-      network_mode: host
