@@ -18,7 +18,6 @@ RUN apk --no-cache add \
   gcc \
   g++ \
   linux-headers \
-  udev \
   eudev \
   npm \
   upx
@@ -54,6 +53,7 @@ COPY --from=builder \
   /bin/ln \
   /bin/mkdir \
   /usr/bin/basename \
+  /bin/udevadm \
   /bin/
 
 # Copy users from builder
@@ -70,7 +70,6 @@ COPY --from=builder \
 COPY --from=builder \
   /usr/lib/libstdc++.so.6 \
   /usr/lib/libgcc_s.so.1 \
-  /usr/lib/libudev.so.1 \
   /usr/lib/
 
 # Copy zigbee2mqtt binary and stupid dynamic @serialport
