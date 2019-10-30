@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: zigbee2mqtt
+  namespace: zigbee2mqtt
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt
+  namespace: zigbee2mqtt
+  labels:
+    app: zigbee2mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+    spec:
+      # Setup affinity to node with the zigbee-usb label
+      # In my cluster this is the node where the CC2531 is plugged in :)
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: device
+                  operator: In
+                  values:
+                    - zigbee-usb
+      serviceAccountName: zigbee2mqtt
+      securityContext:
+        fsGroup: 1000  # Only works for configmap, hostPath needs chowning on node
+      containers:
+        - name: zigbee2mqtt
+          image: lansible/zigbee2mqtt:master
+          imagePullPolicy: Always
+          # Needed to read the tty device on the host
+          # Related: https://github.com/kubernetes/kubernetes/issues/60748
+          securityContext:
+            privileged: true
+          env:
+            - name: DEBUG
+              value: zigbee-herdsman*
+          volumeMounts:
+            - name: zigbee2mqtt-config
+              mountPath: /config
+            - name: zigbee2mqtt-data
+              mountPath: /data
+            - name: zigbee-usb
+              mountPath: /dev/ttyACM0
+      volumes:
+        - name: zigbee2mqtt-config
+          configMap:
+            name: zigbee2mqtt-config
+        - name: zigbee2mqtt-data
+          hostPath:
+            path: /data/zigbee2mqtt-zigbee2mqtt-data
+        - name: zigbee-usb
+          hostPath:
+            path: /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B00194AD7EC-if00
+            type: CharDevice
