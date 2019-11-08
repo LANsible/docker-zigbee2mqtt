@@ -72,8 +72,8 @@ COPY --from=builder \
 # Copy zigbee2mqtt binary and stupid dynamic @serialport
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 COPY --from=builder \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/ \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node
 
 # Adds entrypoint
 COPY ./entrypoint.sh /entrypoint.sh
