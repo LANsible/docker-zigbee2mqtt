@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Create aliases to busybox
+alias basename="/bin/busybox basename"
+alias ln="/bin/busybox ln"
+alias mkdir="/bin/busybox mkdir"
+
 # Create symlinks when config mounted, else exit
 if [ -d "/config" ]; then
   # For each config file create a symlink
