@@ -46,13 +46,10 @@ FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/dev/shm
 
-# Copy /bin/sh to be able to use an entrypoint
+# Copy /bin/busybox to be able to use an entrypoint
 # Entrypoint uses basename, mkdir and ln
 COPY --from=builder \
-  /bin/sh \
-  /bin/ln \
-  /bin/mkdir \
-  /usr/bin/basename \
+  /bin/busybox \
   /bin/udevadm \
   /bin/
 
@@ -82,6 +79,6 @@ COPY --from=builder \
 COPY ./entrypoint.sh /entrypoint.sh
 
 USER zigbee2mqtt
-ENTRYPOINT ["/bin/sh", "/entrypoint.sh" ]
+ENTRYPOINT ["/bin/busybox", "/entrypoint.sh" ]
 WORKDIR /zigbee2mqtt
 CMD ["./zigbee2mqtt"]
