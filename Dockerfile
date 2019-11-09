@@ -76,6 +76,7 @@ COPY --from=builder \
   /zigbee2mqtt/build/bindings.node
 
 # Symlink bindings to directory for zigbee-herdsman
+RUN ["/bin/busybox", "mkdir", "-p", "/zigbee2mqtt/node_modules/zigbee-herdsman/build"]
 RUN ["/bin/busybox", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node"]
 
 # Adds entrypoint
