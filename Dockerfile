@@ -73,7 +73,7 @@ COPY --from=builder \
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node
+  /zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node
 
 # Adds entrypoint
 COPY ./entrypoint.sh /entrypoint.sh
