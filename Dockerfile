@@ -69,11 +69,14 @@ COPY --from=builder \
   /usr/lib/libgcc_s.so.1 \
   /usr/lib/
 
-# Copy zigbee2mqtt binary and stupid dynamic @serialport
+# Copy zigbee2mqtt binary and bindings for @serialport
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node
+  /zigbee2mqtt/build/bindings.node
+
+# Symlink bindings to directory for zigbee-herdsman
+RUN ["/bin/busybox", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node"]
 
 # Adds entrypoint
 COPY ./entrypoint.sh /entrypoint.sh
