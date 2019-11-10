@@ -44,7 +44,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
 
 FROM scratch
 
-ENV ZIGBEE2MQTT_DATA=/dev/shm
+ENV ZIGBEE2MQTT_DATA=/data
 
 # Copy /bin/busybox to be able to use an entrypoint
 # Entrypoint uses basename, mkdir and ln
