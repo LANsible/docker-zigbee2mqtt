@@ -13,6 +13,7 @@ fi
 # Print warning when no config was found, could be intentional
 if [ ! -d "/config" ]; then
   echo "No /config found, no symlink will be created"
+  exit 0
 fi
 
 # For each config file create a symlink
