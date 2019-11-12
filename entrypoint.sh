@@ -10,21 +10,21 @@ if [ ! -d "/data" ]; then
   echo "No /data found, please data volume to container"
   exit 1
 fi
-# Print warning when no config was found, could be intentional
-if [ ! -d "/config" ]; then
-  echo "No /config found, no symlink will be created"
-  exit 0
-fi
 
-# For each config file create a symlink
-for file in /config/*; do
-  filename=$(basename "$file")
-  # Create symlink when it does not exist yet
-  if [ ! -L "/data/$filename" ]; then
-    echo "Creating symlink from /config/$filename to /data/$filename"
-    ln -sf "/config/$filename" "/data/$filename"
-  fi
-done
+if [ -d "/config" ]; then
+  # For each config file create a symlink
+  for file in /config/*; do
+    filename=$(basename "$file")
+    # Create symlink when it does not exist yet
+    if [ ! -L "/data/$filename" ]; then
+      echo "Creating symlink from /config/$filename to /data/$filename"
+      ln -sf "/config/$filename" "/data/$filename"
+    fi
+  done
+else 
+  # Print warning when no config was found, could be intentional
+  echo "No /config found, no symlink will be created"
+fi
 
 # Start docker CMD
 exec "$@"
