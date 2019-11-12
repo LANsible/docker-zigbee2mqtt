@@ -6,12 +6,13 @@ alias ln="/bin/busybox ln"
 alias mkdir="/bin/busybox mkdir"
 
 # Create symlinks when config mounted, else exit
-if [ ! -d "/config" ]; then
-  echo "No /config found, please mount config to container"
-  exit 1
-elif [ ! -d "/data" ]; then
+if [ ! -d "/data" ]; then
   echo "No /data found, please data volume to container"
   exit 1
+fi
+# Print warning when no config was found, could be intentional
+if [ ! -d "/config" ]; then
+  echo "No /config found, no symlink will be created"
 fi
 
 # For each config file create a symlink
@@ -24,5 +25,5 @@ for file in /config/*; do
   fi
 done
 
-# Start zigbee2mqtt
+# Start docker CMD
 exec "$@"
