@@ -22,7 +22,7 @@ RUN apk --no-cache add \
   npm \
   upx
 
-RUN git clone --depth 1 --single-branch --branch dev-stateless https://github.com/wilmardo/zigbee2mqtt.git /zigbee2mqtt
+RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
 WORKDIR /zigbee2mqtt
 
@@ -48,6 +48,7 @@ ENV ZIGBEE2MQTT_DATA=/data
 
 # Copy /bin/busybox to be able to use an entrypoint
 # Entrypoint uses basename, mkdir and ln
+# udevadm binary is used by zigbee2mqtt
 COPY --from=builder \
   /bin/busybox \
   /bin/udevadm \
