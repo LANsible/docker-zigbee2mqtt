@@ -1,6 +1,6 @@
 FROM alpine:3.10 as builder
 
-ARG VERSION=master
+ARG VERSION=dev
 
 LABEL maintainer="wilmardo" \
   description="Zigbee2MQTT from scratch"
