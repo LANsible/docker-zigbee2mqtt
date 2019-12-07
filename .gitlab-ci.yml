@@ -1,0 +1,28 @@
+---
+image: docker:19.03
+
+services:
+  - docker:19.03-dind
+
+include:
+  - template: Container-Scanning.gitlab-ci.yml
+  - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/docker-login.yml
+  - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/docker-build.yml
+  - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/sast-cis-benchmark.yml
+
+stages:
+  - build
+  - test
+  - publish
+
+publish_branch:
+  variables:
+    DOCKER_IMAGE_NAME: lansible/zigbee2mqtt
+
+publish_tag:
+  variables:
+    DOCKER_IMAGE_NAME: lansible/zigbee2mqtt
+
+publish_latest:
+  variables:
+    DOCKER_IMAGE_NAME: lansible/zigbee2mqtt
