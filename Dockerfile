@@ -1,13 +1,12 @@
 FROM alpine:3.10 as builder
 
-ARG VERSION=master
+ENV VERSION=1.7.1
 
 LABEL maintainer="wilmardo" \
   description="Zigbee2MQTT from scratch"
 
-RUN addgroup -S -g 1000 zigbee2mqtt 2>/dev/null && \
-  adduser -S -u 1000 -D -H -h /dev/shm -s /sbin/nologin -G zigbee2mqtt -g zigbee2mqtt zigbee2mqtt 2>/dev/null && \
-  addgroup zigbee2mqtt dialout
+# Add unprivileged user
+RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 
 # See the upstream Dockerfile for reference:
 # https://github.com/Koenkk/zigbee2mqtt/blob/dev/docker/Dockerfile
@@ -46,18 +45,15 @@ FROM scratch
 
 ENV ZIGBEE2MQTT_DATA=/data
 
+# Copy the unprivileged user
+COPY --from=builder /etc_passwd /etc/passwd
+
 # Copy /bin/busybox to be able to use an entrypoint
 # Entrypoint uses basename, mkdir and ln
 COPY --from=builder \
   /bin/busybox \
   /bin/udevadm \
   /bin/
-
-# Copy users from builder
-COPY --from=builder \
-  /etc/passwd \
-  /etc/group \
-  /etc/
 
 # Copy needed libs
 COPY --from=builder \
