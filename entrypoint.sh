@@ -3,7 +3,6 @@
 # Create aliases to busybox
 alias basename="/bin/busybox basename"
 alias ln="/bin/busybox ln"
-alias mkdir="/bin/busybox mkdir"
 
 # Create symlinks when config mounted, else exit
 if [ ! -d "/data" ]; then
@@ -21,7 +20,7 @@ if [ -d "/config" ]; then
       ln -sf "/config/$filename" "/data/$filename"
     fi
   done
-else 
+else
   # Print warning when no config was found, could be intentional
   echo "No /config found, no symlink will be created"
 fi
