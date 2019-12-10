@@ -10,18 +10,20 @@ LABEL maintainer="wilmardo" \
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 
-# See the upstream Dockerfile for reference:
-# https://github.com/Koenkk/zigbee2mqtt/blob/dev/docker/Dockerfile
+# git: needed for git clone
+# https://serialport.io/docs/guide-installation#alpine-linux
+# python, build-base, linux-headers: needed for compile of serialport
+# npm: needed for nexe install
+# eudev: needed for udevadm binary
 RUN apk --no-cache add \
   git \
-  python \
   make \
   gcc \
   g++ \
+  python \
   linux-headers \
-  eudev \
   npm \
-  upx
+  eudev
 
 RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
@@ -33,16 +35,10 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   npm install --unsafe-perm && \
   npm install --unsafe-perm --global nexe
 
-# NOTE(wilmardo): --build is needed for dynamic require that serialport/bindings seems to use
-# NOTE(wilmardo): For the upx steps and why --empty see: https://github.com/nexe/nexe/issues/366
-RUN nexe \
+RUN --mount=type=cache,from=lansible/nexe-cache:latest,source=/root/.nexe/,target=/root/.nexe/ \
+  nexe \
     --build \
-    --empty \
-    --output zigbee2mqtt && \
-  upx --best /root/.nexe/*/out/Release/node
-
-RUN nexe \
-    --build \
+    --configure="--fully-static" \
     --output zigbee2mqtt
 
 FROM scratch
