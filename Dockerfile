@@ -35,6 +35,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
   npm install --unsafe-perm
 
+WORKDIR /zigbee2mqtt
 RUN nexe --build --target alpine --output zigbee2mqtt
 
 FROM scratch
@@ -48,11 +49,15 @@ COPY --from=builder /etc_passwd /etc/passwd
 # Serialport is using the udevadm binary
 COPY --from=builder /bin/udevadm /bin/udevadm
 
-# Copy needed libs for nodejs since it is partially static
+# Copy needed libs(libstdc++.so, libgcc_s.so) for nodejs since it is partially static
+# Copy linker to be able to use them (lib/ld-musl)
+# Can't be fullly static since @serialport uses a C++ node addon
+# https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
 COPY --from=builder \
+  /lib/ld-musl-*.so.* \
   /usr/lib/libstdc++.so.* \
   /usr/lib/libgcc_s.so.* \
-  /usr/lib/
+  /lib/
 
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
