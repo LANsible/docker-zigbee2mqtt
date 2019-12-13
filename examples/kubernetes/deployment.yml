@@ -6,7 +6,7 @@ metadata:
   namespace: zigbee2mqtt
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: zigbee2mqtt
   namespace: zigbee2mqtt
@@ -40,13 +40,12 @@ spec:
         - name: zigbee2mqtt
           image: lansible/zigbee2mqtt:master
           imagePullPolicy: Always
-          # Needed to read the tty device on the host
-          # Related: https://github.com/kubernetes/kubernetes/issues/60748
           securityContext:
+            # Needed to read the tty device on the host
+            # Related: https://github.com/kubernetes/kubernetes/issues/60748
             privileged: true
-          env:
-            - name: DEBUG
-              value: zigbee-herdsman*
+            # Make container filesystem readonly
+            readOnlyRootFilesystem: true
           volumeMounts:
             - name: zigbee2mqtt-config
               mountPath: /config

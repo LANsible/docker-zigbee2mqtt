@@ -4,6 +4,7 @@
     zigbee2mqtt:
       container_name: zigbee2mqtt
       image: lansible/zigbee2mqtt:latest
+      read_only: true
       volumes:
         - ./config:/config
       devices:

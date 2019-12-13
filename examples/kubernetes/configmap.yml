@@ -9,7 +9,7 @@ metadata:
 data:
   configuration.yaml: |
     # Home Assistant integration (MQTT discovery)
-    homeassistant: true
+    homeassistant: false
 
     # allow new devices to join
     permit_join: true
@@ -19,19 +19,19 @@ data:
       # MQTT base topic for zigbee2mqtt MQTT messages
       base_topic: zigbee2mqtt
       # MQTT server URL
-      server: 'mqtt://mosquitto:1883'
-      user: zigbee2mqtt
-      password: password
+      server: "mqtt://localhost"
+      # MQTT server authentication, uncomment if required:
+      # user: my_user
+      # password: my_password
 
     # Serial settings
     serial:
       # Location of CC2531 USB sniffer
       port: /dev/ttyACM0
 
-    # Map devices to persistant storage
-    devices: devices.yaml
-    groups: groups.yaml
+    # Map devices to persistent /data directory
+    devices: /data/devices.yaml
+    groups: /data/groups.yaml
 
     advanced:
       log_output: ["console"]
-      log_level: debug
