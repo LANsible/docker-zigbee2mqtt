@@ -10,19 +10,8 @@ LABEL maintainer="wilmardo" \
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 
-# git: needed for git clone
-# python, build-base, linux-headers: needed for compile of serialport
-# https://serialport.io/docs/guide-installation#alpine-linux
-# npm: needed for node_modules install
 # eudev: needed for udevadm binary
 RUN apk --no-cache add \
-  git \
-  make \
-  gcc \
-  g++ \
-  python \
-  linux-headers \
-  npm \
   eudev
 
 # RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
