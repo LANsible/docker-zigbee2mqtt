@@ -49,9 +49,6 @@ COPY --from=builder \
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 
-# Add example config
-COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
-
 # Add bindings file needed for serialport
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
@@ -68,6 +65,9 @@ RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
 # Will fail at runtime due missing the mkdir binary
 RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
   ["/bin/busybox.static", "mkdir", "/data"]
+
+# Add example config
+COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
 
 USER zigbee2mqtt
 WORKDIR /zigbee2mqtt
