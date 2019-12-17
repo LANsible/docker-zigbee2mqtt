@@ -4,8 +4,7 @@ FROM lansible/nexe:dev as builder
 
 ENV VERSION=dev
 
-LABEL maintainer="wilmardo" \
-  description="Zigbee2MQTT from scratch"
+LABEL description="Zigbee2MQTT from scratch"
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -23,7 +22,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
   npm install --unsafe-perm
 
-WORKDIR /zigbee2mqtt
+# Package the binary
 RUN nexe --build --target alpine --output zigbee2mqtt
 
 FROM scratch
@@ -66,9 +65,10 @@ RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
   ["/bin/busybox.static", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node"]
 
 # Create default data directory
+# Will fail at runtime due missing the mkdir binary
 RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
   ["/bin/busybox.static", "mkdir", "/data"]
 
 USER zigbee2mqtt
 WORKDIR /zigbee2mqtt
-ENTRYPOINT ["/zigbee2mqtt/zigbee2mqtt"]
+ENTRYPOINT ["./zigbee2mqtt"]
