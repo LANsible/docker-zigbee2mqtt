@@ -2,7 +2,7 @@
 
 FROM lansible/nexe:latest as builder
 
-ENV VERSION=1.7.1
+ENV VERSION=dev
 
 LABEL maintainer="wilmardo" \
   description="Zigbee2MQTT from scratch"
@@ -14,8 +14,7 @@ RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 RUN apk --no-cache add \
   eudev
 
-# RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
-RUN git clone --depth 1 --single-branch --branch my-dev https://github.com/wilmardo/zigbee2mqtt.git /zigbee2mqtt
+RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
 WORKDIR /zigbee2mqtt
 
