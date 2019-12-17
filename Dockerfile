@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM lansible/nexe:latest as builder
+FROM lansible/nexe:dev as builder
 
 ENV VERSION=dev
 
