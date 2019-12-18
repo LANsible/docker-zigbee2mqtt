@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:experimental
 
-FROM lansible/nexe:dev as builder
+
+#######################################################################################################################
+# Nexe packaging of binary
+#######################################################################################################################
+FROM lansible/nexe:latest as builder
 
 ENV VERSION=dev
 
@@ -25,6 +29,10 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
 # Package the binary
 RUN nexe --build --target alpine --output zigbee2mqtt
 
+
+#######################################################################################################################
+# Final scratch image
+#######################################################################################################################
 FROM scratch
 
 ENV ZIGBEE2MQTT_CONFIG=/config/configuration.yaml \
