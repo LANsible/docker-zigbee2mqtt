@@ -8,8 +8,6 @@ FROM lansible/nexe:latest as builder
 
 ENV VERSION=dev
 
-LABEL description="Zigbee2MQTT from scratch"
-
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 
@@ -35,8 +33,12 @@ RUN nexe --build --target alpine --output zigbee2mqtt
 #######################################################################################################################
 FROM scratch
 
+# Set env vars for persitance
 ENV ZIGBEE2MQTT_CONFIG=/config/configuration.yaml \
     ZIGBEE2MQTT_DATA=/data
+
+# Add description
+LABEL org.label-schema.description="Zigbee2MQTT as single binary in a scratch container"
 
 # Copy the unprivileged user
 COPY --from=builder /etc_passwd /etc/passwd
