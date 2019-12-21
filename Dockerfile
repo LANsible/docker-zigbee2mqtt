@@ -1,6 +1,3 @@
-# syntax=docker/dockerfile:experimental
-
-
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
@@ -64,17 +61,20 @@ COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
   /zigbee2mqtt/build/bindings.node
 
+# Add static busybox for symlinking
+COPY --from=builder /bin/busybox.static /bin/busybox.static
+
 # Symlink bindings to directory for zigbee-herdsman
 # NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
-RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
-  ["/bin/busybox.static", "mkdir", "-p", "/zigbee2mqtt/node_modules/zigbee-herdsman/build"]
-RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
-  ["/bin/busybox.static", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node"]
+RUN ["/bin/busybox.static", "mkdir", "-p", "/zigbee2mqtt/node_modules/zigbee-herdsman/build"]
+RUN ["/bin/busybox.static", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node"]
 
 # Create default data directory
 # Will fail at runtime due missing the mkdir binary
-RUN --mount=from=builder,source=/bin/busybox.static,target=/bin/busybox.static \
-  ["/bin/busybox.static", "mkdir", "/data"]
+RUN ["/bin/busybox.static", "mkdir", "/data"]
+
+# Let busybox remove itself
+RUN ["/bin/busybox.static", "rm", "-s", "/bin/busybox.static"]
 
 # Add example config
 COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
