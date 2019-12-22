@@ -74,7 +74,7 @@ RUN ["/bin/busybox.static", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/z
 RUN ["/bin/busybox.static", "mkdir", "/data"]
 
 # Let busybox remove itself
-RUN ["/bin/busybox.static", "rm", "-s", "/bin/busybox.static"]
+RUN ["/bin/busybox.static", "rm", "-f", "/bin/busybox.static"]
 
 # Add example config
 COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
