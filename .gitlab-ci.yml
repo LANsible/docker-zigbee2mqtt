@@ -1,4 +1,7 @@
 ---
+variables:
+  DOCKER_IMAGE_NAME: lansible/zigbee2mqtt
+
 include:
   - template: Container-Scanning.gitlab-ci.yml
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/docker-login.yml
