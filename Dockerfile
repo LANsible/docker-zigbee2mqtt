@@ -50,7 +50,7 @@ COPY --from=builder /bin/udevadm /bin/udevadm
 # https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
 COPY --from=builder /lib/ld-musl-*.so.1 /lib/
 COPY --from=builder \
-  /usr/lib/libstdc++.so.6 \
+  /usr/lib/libstdc++.so.6.* \
   /usr/lib/libgcc_s.so.1 \
   /usr/lib/
 
