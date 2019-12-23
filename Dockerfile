@@ -22,8 +22,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   npm install --unsafe-perm
 
 # Package the binary
-RUN nexe --build --target alpine --output zigbee2mqtt
-
+# Create /data to copy into final stage
+RUN nexe --build --target alpine --output zigbee2mqtt && \
+  mkdir /data
 
 #######################################################################################################################
 # Final scratch image
@@ -47,36 +48,30 @@ COPY --from=builder /bin/udevadm /bin/udevadm
 # Copy linker to be able to use them (lib/ld-musl)
 # Can't be fullly static since @serialport uses a C++ node addon
 # https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
+COPY --from=builder /lib/ld-musl-*.so.1 /lib/
 COPY --from=builder \
-  /lib/ld-musl-*.so.* \
-  /usr/lib/libstdc++.so.* \
-  /usr/lib/libgcc_s.so.* \
-  /lib/
+  /usr/lib/libstdc++.so.6 \
+  /usr/lib/libgcc_s.so.1 \
+  /usr/lib/
 
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 
-# Add bindings file needed for serialport
+# NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
+# Just 78kb so not worth symlink
+# FUTURE: when RUN --mount makes it to kaniko symlinking is an option again
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
   /zigbee2mqtt/build/bindings.node
-
-# Add static busybox for symlinking
-COPY --from=builder /bin/busybox.static /bin/busybox.static
-
-# Symlink bindings to directory for zigbee-herdsman
-# NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
-RUN ["/bin/busybox.static", "mkdir", "-p", "/zigbee2mqtt/node_modules/zigbee-herdsman/build"]
-RUN ["/bin/busybox.static", "ln", "-sf", "/zigbee2mqtt/build/bindings.node", "/zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node"]
+COPY --from=builder \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node
 
 # Create default data directory
 # Will fail at runtime due missing the mkdir binary
-RUN ["/bin/busybox.static", "mkdir", "/data"]
+COPY --from=builder /data /data
 
-# Let busybox remove itself
-RUN ["/bin/busybox.static", "rm", "-f", "/bin/busybox.static"]
-
-# Add example config
+# Add example config, also create the /config dir
 COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
 
 USER zigbee2mqtt
