@@ -1,7 +1,8 @@
+ARG ARCHITECTURE
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:latest as builder
+FROM lansible/nexe:master-${ARCHITECTURE} as builder
 
 ENV VERSION=dev
 
@@ -19,7 +20,7 @@ WORKDIR /zigbee2mqtt
 # Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
-  npm install --unsafe-perm
+  npm install
 
 # Package the binary
 # Create /data to copy into final stage
@@ -50,7 +51,7 @@ COPY --from=builder /bin/udevadm /bin/udevadm
 # https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
 COPY --from=builder /lib/ld-musl-*.so.1 /lib/
 COPY --from=builder \
-  /usr/lib/libstdc++.so.6.* \
+  /usr/lib/libstdc++.so.6 \
   /usr/lib/libgcc_s.so.1 \
   /usr/lib/
 
