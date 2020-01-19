@@ -50,14 +50,10 @@ COPY --from=builder /bin/udevadm /bin/udevadm
 # Can't be fullly static since @serialport uses a C++ node addon
 # https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
 COPY --from=builder /lib/ld-musl-*.so.1 /lib/
-# TODO: merge this into one COPY statement when the issue is fixed:
-# https://github.com/GoogleContainerTools/kaniko/issues/915
 COPY --from=builder \
-  /usr/lib/libstdc++.so.6.* \
-  /usr/lib/libstdc++.so.6
-COPY --from=builder \
+  /usr/lib/libstdc++.so.6 \
   /usr/lib/libgcc_s.so.1 \
-  /usr/lib/libgcc_s.so.1
+  /usr/lib/
 
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
