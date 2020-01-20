@@ -9,6 +9,7 @@ include:
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/sast-cis-benchmark.yml
 
 stages:
+  - lint
   - build
   - test
   - push

@@ -2,12 +2,14 @@ ARG ARCHITECTURE
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:master-${ARCHITECTURE} as builder
+FROM lansible/nexe:4.0.0-beta.3-${ARCHITECTURE} as builder
 
-ENV VERSION=dev
+ENV VERSION=1.9.0
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
+# Add to dailout as secondary group (20)
+RUN echo "dailout:x:20:zigbee2mqtt" > /etc_group
 
 # eudev: needed for udevadm binary
 RUN apk --no-cache add \
@@ -41,6 +43,7 @@ LABEL org.label-schema.description="Zigbee2MQTT as single binary in a scratch co
 
 # Copy the unprivileged user
 COPY --from=builder /etc_passwd /etc/passwd
+COPY --from=builder /etc_group /etc/group
 
 # Serialport is using the udevadm binary
 COPY --from=builder /bin/udevadm /bin/udevadm
