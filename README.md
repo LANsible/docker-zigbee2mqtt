@@ -1,5 +1,5 @@
 # Zigbee2MQTT from scratch!
-[![Build Status](https://cloud.drone.io/api/badges/LANsible/docker-zigbee2mqtt/status.svg)](https://cloud.drone.io/LANsible/docker-zigbee2mqtt)
+[![pipeline status](https://gitlab.com/lansible1/docker-zigbee2mqtt/badges/master/pipeline.svg)](https://gitlab.com/lansible1/docker-zigbee2mqtt/-/commits/master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/lansible/zigbee2mqtt.svg)](https://hub.docker.com/r/lansible/zigbee2mqtt)
 [![Docker Version](https://images.microbadger.com/badges/version/lansible/zigbee2mqtt:latest.svg)](https://microbadger.com/images/lansible/zigbee2mqtt:latest)
 [![Docker Size/Layers](https://images.microbadger.com/badges/image/lansible/zigbee2mqtt:latest.svg)](https://microbadger.com/images/lansible/zigbee2mqtt:latest)
