@@ -4,7 +4,7 @@ ARG ARCHITECTURE
 #######################################################################################################################
 FROM lansible/nexe:4.0.0-beta.4-${ARCHITECTURE} as builder
 
-ENV VERSION=1.11.0
+ENV VERSION=1.12.0
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
