@@ -2,7 +2,7 @@ ARG ARCHITECTURE
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:4.0.0-beta.14-${ARCHITECTURE} as builder
+FROM lansible/nexe:master-${ARCHITECTURE} as builder
 
 ENV VERSION=1.14.4
 
