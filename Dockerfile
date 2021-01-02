@@ -4,7 +4,7 @@ ARG ARCHITECTURE
 #######################################################################################################################
 FROM lansible/nexe:4.0.0-beta.6-${ARCHITECTURE} as builder
 
-ENV VERSION=1.16.2
+ENV VERSION=1.17.0
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -22,7 +22,7 @@ WORKDIR /zigbee2mqtt
 # Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
-  npm ci
+  npm ci --production
 
 # Package the binary
 # Create /data to copy into final stage
