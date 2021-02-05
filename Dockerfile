@@ -2,7 +2,7 @@ ARG ARCHITECTURE
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:4.0.0-beta.6-${ARCHITECTURE} as builder
+FROM lansible/nexe:4.0.0-beta.17-${ARCHITECTURE} as builder
 
 ENV VERSION=1.17.1
 
@@ -26,8 +26,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
 
 # Package the binary
 # Create /data to copy into final stage
-RUN nexe --build --target alpine --output zigbee2mqtt && \
+RUN nexe --build --output zigbee2mqtt && \
   mkdir /data
+
 
 #######################################################################################################################
 # Final scratch image
