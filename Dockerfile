@@ -26,7 +26,7 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
 
 # Package the binary
 # Create /data to copy into final stage
-RUN nexe --build --output zigbee2mqtt && \
+RUN nexe --build --resource node_modules/zigbee2mqtt-frontend/dist --output zigbee2mqtt && \
   mkdir /data
 
 
@@ -82,3 +82,5 @@ COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
 USER zigbee2mqtt
 WORKDIR /zigbee2mqtt
 ENTRYPOINT ["./zigbee2mqtt"]
+
+EXPOSE 8080
