@@ -60,6 +60,7 @@ spec:
         - name: zigbee2mqtt-data
           hostPath:
             path: /data/zigbee2mqtt-zigbee2mqtt-data
+        # Remove when using a tcp serial setup
         - name: zigbee-usb
           hostPath:
             path: /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B00194AD7EC-if00

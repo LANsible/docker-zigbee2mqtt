@@ -1,12 +1,32 @@
 ---
-  version: "3"
-  services:
-    zigbee2mqtt:
-      container_name: zigbee2mqtt
-      image: lansible/zigbee2mqtt:latest
-      read_only: true
-      volumes:
-        - ./config:/config
-      devices:
-        - /dev/ttyACM0:/dev/ttyACM0
-      restart: always
+version: "3"
+services:
+  volumes-provisioner:
+    image: hasnat/volumes-provisioner
+    environment:
+      PROVISION_DIRECTORIES: "1000:1000:0755:/data"
+    volumes:
+      - z2m_data:/data
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: zigbee2mqtt:latest
+    read_only: true
+    volumes:
+      - ./config:/config
+      - z2m_data:/data
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - volumes-provisioner
+
+  mosquitto:
+    container_name: mosquitto
+    image: mosquitto:latest
+    read_only: true
+
+volumes:
+  z2m_data:
