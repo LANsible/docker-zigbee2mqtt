@@ -22,6 +22,8 @@ mqtt:
 serial:
   # Location of CC2531 USB sniffer
   port: /dev/ttyACM0
+  # Also possible to use the tcp://
+  # port: tcp://192.168.1.24:23
 
 # Map devices to persistent /data directory
 devices: /data/devices.yaml

@@ -10,11 +10,12 @@ services:
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
-    image: zigbee2mqtt:latest
+    image: lansible/zigbee2mqtt:latest
     read_only: true
     volumes:
       - ./config:/config
       - z2m_data:/data
+    # Remove when using a remote TCP controller
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     ports:
@@ -25,7 +26,7 @@ services:
 
   mosquitto:
     container_name: mosquitto
-    image: mosquitto:latest
+    image: lansible/mosquitto:latest
     read_only: true
 
 volumes:
