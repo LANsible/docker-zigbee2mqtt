@@ -2,7 +2,7 @@ ARG ARCHITECTURE
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:4.0.0-beta.17-${ARCHITECTURE} as builder
+FROM lansible/nexe:master-${ARCHITECTURE} as builder
 
 ENV VERSION=1.17.1
 
@@ -26,7 +26,9 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
 
 # Package the binary
 # Create /data to copy into final stage
-RUN nexe --build --resource node_modules/zigbee2mqtt-frontend/dist --output zigbee2mqtt && \
+RUN nexe --build \
+    --resource node_modules/zigbee2mqtt-frontend/dist \
+    --output zigbee2mqtt && \
   mkdir /data
 
 
@@ -64,7 +66,7 @@ COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 
 # NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
 # Just 78kb so not worth symlink
-# FUTURE: when RUN --mount makes it to kaniko symlinking is an option again
+# NOTE: Does not work when added as a --resource with Nexe
 COPY --from=builder \
   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
   /zigbee2mqtt/build/bindings.node
@@ -79,8 +81,7 @@ COPY --from=builder /data /data
 # Add example config, also create the /config dir
 COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
 
+EXPOSE 8080
 USER zigbee2mqtt
 WORKDIR /zigbee2mqtt
 ENTRYPOINT ["./zigbee2mqtt"]
-
-EXPOSE 8080
