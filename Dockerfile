@@ -36,56 +36,56 @@ RUN nexe --build \
   mkdir /data
 
 
-# #######################################################################################################################
-# # Final scratch image
-# #######################################################################################################################
-# FROM scratch
+#######################################################################################################################
+# Final scratch image
+#######################################################################################################################
+FROM scratch
 
-# # Set env vars for persitance
-# ENV ZIGBEE2MQTT_CONFIG=/config/configuration.yaml \
-#     ZIGBEE2MQTT_DATA=/data
+# Set env vars for persitance
+ENV ZIGBEE2MQTT_CONFIG=/config/configuration.yaml \
+    ZIGBEE2MQTT_DATA=/data
 
-# # Add description
-# LABEL org.label-schema.description="Zigbee2MQTT as single binary in a scratch container"
+# Add description
+LABEL org.label-schema.description="Zigbee2MQTT as single binary in a scratch container"
 
-# # Copy the unprivileged user
-# COPY --from=builder /etc_passwd /etc/passwd
-# COPY --from=builder /etc_group /etc/group
+# Copy the unprivileged user
+COPY --from=builder /etc_passwd /etc/passwd
+COPY --from=builder /etc_group /etc/group
 
-# # Serialport is using the udevadm binary
-# COPY --from=builder /bin/udevadm /bin/udevadm
+# Serialport is using the udevadm binary
+COPY --from=builder /bin/udevadm /bin/udevadm
 
-# # Copy needed libs(libstdc++.so, libgcc_s.so) for nodejs since it is partially static
-# # Copy linker to be able to use them (lib/ld-musl)
-# # Can't be fullly static since @serialport uses a C++ node addon
-# # https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
-# COPY --from=builder /lib/ld-musl-*.so.1 /lib/
-# COPY --from=builder \
-#   /usr/lib/libstdc++.so.6 \
-#   /usr/lib/libgcc_s.so.1 \
-#   /usr/lib/
+# Copy needed libs(libstdc++.so, libgcc_s.so) for nodejs since it is partially static
+# Copy linker to be able to use them (lib/ld-musl)
+# Can't be fullly static since @serialport uses a C++ node addon
+# https://github.com/serialport/node-serialport/blob/master/packages/bindings/lib/linux.js#L2
+COPY --from=builder /lib/ld-musl-*.so.1 /lib/
+COPY --from=builder \
+  /usr/lib/libstdc++.so.6 \
+  /usr/lib/libgcc_s.so.1 \
+  /usr/lib/
 
-# # Copy zigbee2mqtt binary
-# COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
+# Copy zigbee2mqtt binary
+COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 
-# # NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
-# # Just 78kb so not worth symlink
-# # NOTE: Does not work when added as a --resource with Nexe
-# COPY --from=builder \
-#   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
-#   /zigbee2mqtt/build/bindings.node
-# COPY --from=builder \
-#   /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
-#   /zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node
+# NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
+# Just 78kb so not worth symlink
+# NOTE: Does not work when added as a --resource with Nexe
+COPY --from=builder \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
+  /zigbee2mqtt/build/bindings.node
+COPY --from=builder \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
+  /zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node
 
-# # Create default data directory
-# # Will fail at runtime due missing the mkdir binary
-# COPY --from=builder /data /data
+# Create default data directory
+# Will fail at runtime due missing the mkdir binary
+COPY --from=builder /data /data
 
-# # Add example config, also create the /config dir
-# COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
+# Add example config, also create the /config dir
+COPY examples/compose/config/configuration.yaml ${ZIGBEE2MQTT_CONFIG}
 
-# EXPOSE 8080
-# USER zigbee2mqtt
-# WORKDIR /zigbee2mqtt
-# ENTRYPOINT ["./zigbee2mqtt"]
+EXPOSE 8080
+USER zigbee2mqtt
+WORKDIR /zigbee2mqtt
+ENTRYPOINT ["./zigbee2mqtt"]
