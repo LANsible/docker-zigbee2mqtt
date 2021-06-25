@@ -1,10 +1,9 @@
-ARG ARCHITECTURE
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:4.0.0-beta.18-${ARCHITECTURE} as builder
+FROM lansible/nexe:4.0.0-beta.18 as builder
 
-ENV VERSION=1.18.3
+ENV VERSION=1.19.1
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
