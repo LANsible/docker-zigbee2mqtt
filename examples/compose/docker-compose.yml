@@ -17,7 +17,7 @@ services:
       - z2m_data:/data
     # Remove when using a remote TCP controller
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+      - /dev/ttyUSB0:/dev/ttyACM0
     ports:
       - 8080:8080
     restart: always

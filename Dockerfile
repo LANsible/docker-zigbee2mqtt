@@ -3,7 +3,7 @@
 #######################################################################################################################
 FROM lansible/nexe:4.0.0-beta.18 as builder
 
-ENV VERSION=1.20.0
+ENV VERSION=1.21.0
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -18,16 +18,23 @@ RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/K
 
 WORKDIR /zigbee2mqtt
 
-# Makeflags source: https://math-linux.com/linux/tip-of-the-day/article/speedup-gnu-make-build-and-compilation-process
+# Install all modules
+# Run build to make all html files
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
-  npm ci --production
+  npm install && \
+  npm run build && \
+  npm prune --production
 
 # Package the binary
-# dist contains the frontend compiled stuff
+# zigbee2mqtt dist contains typescript compile
+# .hash need explicit resource otherwise not matched
+# frontend/dist contains the frontend compiled stuff
 # devices and lib are both needed at runtime
 # Create /data to copy into final stage
 RUN nexe --build \
+    --resource dist/ \
+    --resource dist/.hash \
     --resource lib/ \
     --resource node_modules/zigbee2mqtt-frontend/dist \
     --resource node_modules/zigbee-herdsman-converters/devices \
@@ -67,6 +74,7 @@ COPY --from=builder \
 
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
+
 
 # NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
 # Just 78kb so not worth symlink
