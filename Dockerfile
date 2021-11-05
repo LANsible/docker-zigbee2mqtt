@@ -3,7 +3,7 @@
 #######################################################################################################################
 FROM lansible/nexe:4.0.0-beta.19 as builder
 
-ENV VERSION=1.21.2
+ENV VERSION=1.22.0
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -22,9 +22,10 @@ WORKDIR /zigbee2mqtt
 # Run build to make all html files
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
-  npm install && \
+  npm ci --no-audit --no-optional --no-update-notifier && \
   npm run build && \
-  npm prune --production
+  npm ci --production --no-audit --no-optional --no-update-notifier && \
+  echo $(git rev-parse --short HEAD) > dist/.hash
 
 # Package the binary
 # zigbee2mqtt dist contains typescript compile
