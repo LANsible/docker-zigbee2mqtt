@@ -1,8 +1,8 @@
 # Zigbee2MQTT from scratch!
-[![pipeline status](https://gitlab.com/lansible1/docker-zigbee2mqtt/badges/master/pipeline.svg)](https://gitlab.com/lansible1/docker-zigbee2mqtt/-/commits/master)
+[![Build Status](https://gitlab.com/lansible1/docker-zigbee2mqtt/badges/master/pipeline.svg)](https://gitlab.com/lansible1/docker-zigbee2mqtt/pipelines)
 [![Docker Pulls](https://img.shields.io/docker/pulls/lansible/zigbee2mqtt.svg)](https://hub.docker.com/r/lansible/zigbee2mqtt)
-[![Docker Version](https://images.microbadger.com/badges/version/lansible/zigbee2mqtt:latest.svg)](https://microbadger.com/images/lansible/zigbee2mqtt:latest)
-[![Docker Size/Layers](https://images.microbadger.com/badges/image/lansible/zigbee2mqtt:latest.svg)](https://microbadger.com/images/lansible/zigbee2mqtt:latest)
+[![Docker Version](https://img.shields.io/docker/v/lansible/zigbee2mqtt?sort=semver)](https://hub.docker.com/r/lansible/zigbee2mqtt)
+[![Docker Image Size](https://img.shields.io/docker/image-size/lansible/zigbee2mqtt?sort=semver)](https://hub.docker.com/r/lansible/zigbee2mqtt)
 
 ## Why not use the official container?
 
@@ -23,15 +23,9 @@ docker-compose up
 You could build the container locally like this:
 
 ```bash
-docker build . \
-      --build-arg ARCHITECTURE=amd64 \
-      --tag lansible/zigbee2mqtt:dev-amd64
+docker run --privileged --rm tonistiigi/binfmt --install all
+docker buildx build --load --platform linux/amd64 . -t test
 ```
-The arguments are:
-
-| Build argument | Description                                    | Example                 |
-|----------------|------------------------------------------------|-------------------------|
-| `ARCHITECTURE` | For what architecture to build the container   | `arm64`                 |
 
 Available architectures are what `lansible/nexe` supports:
 https://hub.docker.com/r/lansible/nexe/tags
