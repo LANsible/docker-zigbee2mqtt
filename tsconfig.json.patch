@@ -1,0 +1,28 @@
+diff --git a/tsconfig.json b/tsconfig.json
+index b0e51908..6de57dbc 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -2,18 +2,18 @@
+     "compilerOptions": {
+         "module": "commonjs",
+         "esModuleInterop": true,
+-        "target": "es2018",
+-        "lib": ["es2018"],
++        "target": "es2021",
++        "lib": ["es2021"],
+         "noImplicitAny": true,
+         "noImplicitThis": true,
+         "moduleResolution": "node",
+-        "declaration": true,
+-        "declarationMap": true,
++        "declaration": false,
++        "declarationMap": false,
+         "outDir": "dist",
+         "baseUrl": ".",
+         "allowJs": true,
+         "rootDir": "lib",
+-        "inlineSourceMap": true,
++        "inlineSourceMap": false,
+         "resolveJsonModule": true,
+         "experimentalDecorators": true
+     },

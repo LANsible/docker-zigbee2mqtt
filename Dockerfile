@@ -18,6 +18,10 @@ RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/K
 
 WORKDIR /zigbee2mqtt
 
+# Apply tsconfig patch for minimal typescript build (removes sourcemaps etc)
+COPY tsconfig.json.patch /zigbee2mqtt/tsconfig.json.patch
+RUN git apply tsconfig.json.patch
+
 # Install all modules
 # Run build to make all html files
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
@@ -28,18 +32,20 @@ RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   echo $(git rev-parse --short HEAD) > dist/.hash
 
 # Package the binary
-# zigbee2mqtt dist contains typescript compile
-# .hash need explicit resource otherwise not matched
+# zigbee2mqtt dist contains typescript compile, needs otherwise tries it at runtime
+# .hash need explicit resource not mathces by dist/
 # frontend/dist contains the frontend compiled stuff
-# devices and lib are both needed at runtime
+# zigbee-herdsman-converters/devices and zigbee-herdsman-converters/lib are both needed at runtime
+# HACK: deep-object-diff is needed otherwise fails
 # Create /data to copy into final stage
 RUN nexe --build \
     --resource dist/ \
     --resource dist/.hash \
-    --resource lib/ \
     --resource node_modules/zigbee2mqtt-frontend/dist \
     --resource node_modules/zigbee-herdsman-converters/devices \
     --resource node_modules/zigbee-herdsman-converters/lib \
+    --resource node_modules/deep-object-diff \
+    --input index.js \
     --output zigbee2mqtt && \
   mkdir /data
 
