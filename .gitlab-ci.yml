@@ -1,9 +1,17 @@
 ---
 variables:
   DOCKER_IMAGE_NAME: lansible/zigbee2mqtt
+  # We expect a serialport error, when not there Zigbee2mqtt isn't starting properly
+  DOCKER_TEST_COMMAND: "| grep 'Error while opening serialport'"
 
 include:
   - template: Container-Scanning.gitlab-ci.yml
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/default.yml
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/docker-build.yml
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/sast-cis-benchmark.yml
+
+test_amd64:
+  extends: .test
+
+test_arm64:
+  extends: .test
