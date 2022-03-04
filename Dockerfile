@@ -3,7 +3,7 @@
 #######################################################################################################################
 FROM lansible/nexe:4.0.0-beta.19 as builder
 
-ENV VERSION=1.24.0
+ENV VERSION=1.25.1
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -40,6 +40,8 @@ RUN nexe --build \
     --resource node_modules/zigbee2mqtt-frontend/dist \
     --resource node_modules/zigbee-herdsman-converters/devices \
     --resource node_modules/zigbee-herdsman-converters/lib \
+    --resource node_modules/deep-object-diff \
+    --input index.js \
     --output zigbee2mqtt && \
   mkdir /data
 
@@ -76,16 +78,15 @@ COPY --from=builder \
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 
-
 # NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
 # Just 78kb so not worth symlink
 # NOTE: Does not work when added as a --resource with Nexe
 COPY --from=builder \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
+  /zigbee2mqtt/node_modules/@serialport/bindings/build/Release/bindings.node \
   /zigbee2mqtt/build/bindings.node
 COPY --from=builder \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/node_modules/@serialport/bindings/build/Release/bindings.node \
-  /zigbee2mqtt/node_modules/zigbee-herdsman/build/bindings.node
+  /zigbee2mqtt/node_modules/@serialport/bindings/lib/linux.js \
+  /zigbee2mqtt/node_modules/@serialport/bindings/lib/linux.js
 
 # Create default data directory
 # Will fail at runtime due missing the mkdir binary
