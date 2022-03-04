@@ -7,3 +7,9 @@ include:
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/default.yml
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/docker-build.yml
   - remote: https://raw.githubusercontent.com/LANsible/gitlab-includes/master/sast-cis-benchmark.yml
+
+test_amd64:
+  extends: .test
+
+test_arm64:
+  extends: .test
