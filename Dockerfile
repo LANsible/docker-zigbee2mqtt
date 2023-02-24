@@ -1,9 +1,12 @@
 #######################################################################################################################
 # Nexe packaging of binary
 #######################################################################################################################
-FROM lansible/nexe:4.0.0-beta.19 as builder
+FROM lansible/nexe:4.0.0-rc.2 as builder
 
-ENV VERSION=1.27.2
+# https://github.com/docker/buildx#building-multi-platform-images
+ARG TARGETPLATFORM
+# https://github.com/Koenkk/zigbee2mqtt/releases
+ENV VERSION=1.30.1
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -11,8 +14,10 @@ RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 RUN echo "dailout:x:20:zigbee2mqtt" > /etc_group
 
 # eudev: needed for udevadm binary
+# TODO: remove npm after new nexe release
 RUN apk --no-cache add \
-  eudev
+  eudev \
+  npm
 
 RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
@@ -22,10 +27,18 @@ WORKDIR /zigbee2mqtt
 # Run build to make all html files
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
   export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
-  npm ci --no-audit --no-optional --no-update-notifier && \
+  npm ci --no-audit --omit=optional --no-update-notifier && \
   npm run build && \
-  npm ci --production --no-audit --no-optional --no-update-notifier && \
+  npm ci --production --no-audit --omit=optional --no-update-notifier && \
   echo $(git rev-parse --short HEAD) > dist/.hash
+
+# Remove all unneeded prebuilds
+RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+    export TARGETPLATFORM="linux/x64"; \
+  fi && \
+  export PLATFORM=${TARGETPLATFORM/\//-}; \
+  find . -name *.node -path *prebuilds/* -not -path *${PLATFORM}* -name *.node -delete && \
+  find . -name *.glibc.node -path *prebuilds/* -delete
 
 # Package the binary
 # zigbee2mqtt dist contains typescript compile
@@ -78,15 +91,10 @@ COPY --from=builder \
 # Copy zigbee2mqtt binary
 COPY --from=builder /zigbee2mqtt/zigbee2mqtt /zigbee2mqtt/zigbee2mqtt
 
-# NOTE: don't try to remove one, both zigbee2mqtt and zigbee-herdsman need the bindings file
-# Just 78kb so not worth symlink
-# NOTE: Does not work when added as a --resource with Nexe
+# Add bindings.node for serialport
 COPY --from=builder \
-  /zigbee2mqtt/node_modules/@serialport/bindings/build/Release/bindings.node \
-  /zigbee2mqtt/build/bindings.node
-COPY --from=builder \
-  /zigbee2mqtt/node_modules/@serialport/bindings/lib/linux.js \
-  /zigbee2mqtt/node_modules/@serialport/bindings/lib/linux.js
+  /zigbee2mqtt/node_modules/@serialport/bindings-cpp/prebuilds/ \
+  /zigbee2mqtt/node_modules/@serialport/bindings-cpp/prebuilds/
 
 # Create default data directory
 # Will fail at runtime due missing the mkdir binary
