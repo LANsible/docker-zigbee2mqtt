@@ -6,7 +6,7 @@ FROM lansible/nexe:4.0.0-rc.2 as builder
 # https://github.com/docker/buildx#building-multi-platform-images
 ARG TARGETPLATFORM
 # https://github.com/Koenkk/zigbee2mqtt/releases
-ENV VERSION=1.30.1
+ENV VERSION=1.32.1
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
@@ -14,22 +14,22 @@ RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
 RUN echo "dailout:x:20:zigbee2mqtt" > /etc_group
 
 # eudev: needed for udevadm binary
-# TODO: remove npm after new nexe release
 RUN apk --no-cache add \
-  eudev \
-  npm
+  eudev
 
 RUN git clone --depth 1 --single-branch --branch ${VERSION} https://github.com/Koenkk/zigbee2mqtt.git /zigbee2mqtt
 
 WORKDIR /zigbee2mqtt
 
 # Install all modules
+# Save hash file otherwise will start building on startup
 # Run build to make all html files
+# Serialport needs to be rebuild for Alpine https://serialport.io/docs/9.x.x/guide-installation#alpine-linux
 RUN CORES=$(grep -c '^processor' /proc/cpuinfo); \
-  export MAKEFLAGS="-j$((CORES+1)) -l${CORES}"; \
+  export MAKEFLAGS="-j$((CORES+1)) -l${CORES} CFLAGS=-fuse-ld=mold"; \
   npm ci --no-audit --omit=optional --no-update-notifier && \
   npm run build && \
-  npm ci --production --no-audit --omit=optional --no-update-notifier && \
+  npm ci --no-audit --omit=optional --omit=dev --no-update-notifier && \
   echo $(git rev-parse --short HEAD) > dist/.hash
 
 # Remove all unneeded prebuilds
