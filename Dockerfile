@@ -6,7 +6,7 @@ FROM lansible/nexe:4.0.0-rc.2 as builder
 # https://github.com/docker/buildx#building-multi-platform-images
 ARG TARGETPLATFORM
 # https://github.com/Koenkk/zigbee2mqtt/releases
-ENV VERSION=1.32.1
+ENV VERSION=1.32.2
 
 # Add unprivileged user
 RUN echo "zigbee2mqtt:x:1000:1000:zigbee2mqtt:/:" > /etc_passwd
